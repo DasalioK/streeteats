@@ -32,3 +32,4 @@ Alleen voor testen, geen echte personen. Wachtwoord voor allebei: `demo-password
 | Dag | Onderdeel | Eisen |
 |---|---|---|
 | 1 | Projectbasis, database met testdata, layout | TE1, TE2 |
+| 2 | Inloggen, uitloggen, rollen, accounts voor de beheerder | TE4, TE5 |
