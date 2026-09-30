@@ -1,2 +1,5 @@
 # Echte instellingen (met wachtwoorden) nooit in Git. Gebruik includes/config.example.php als voorbeeld.
 includes/config.php
+
+# Mijn persoonlijke examenaantekeningen, geen onderdeel van de code
+EXAMEN-UITLEG.md
