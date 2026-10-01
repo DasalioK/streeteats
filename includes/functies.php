@@ -49,6 +49,37 @@ function ga_naar($pad)
 }
 
 /* ---------------------------------------------------------------------
+ * INVOER CONTROLEREN (TE4)
+ * --------------------------------------------------------------------- */
+
+/* Klopt de datum echt? '2026-02-30' bestaat bijvoorbeeld niet. Formaat: jjjj-mm-dd */
+function is_geldige_datum($tekst)
+{
+    $datum = DateTime::createFromFormat('Y-m-d', $tekst);
+    return $datum && $datum->format('Y-m-d') === $tekst;
+}
+
+/* Is het een geldige tijd, zoals 09:30? (uren 00-23, minuten 00-59) */
+function is_geldige_tijd($tekst)
+{
+    return preg_match('/^([01][0-9]|2[0-3]):[0-5][0-9]$/', $tekst) === 1;
+}
+
+/* Is de vergunning van een plek verlopen op een bepaalde datum? (FE7)
+ * Een vergunning is geldig tot en met de einddatum. */
+function vergunning_verlopen($einddatum, $opDatum)
+{
+    return $einddatum < $opDatum;
+}
+
+/* Naam van de dag: 1 = maandag ... 7 = zondag */
+function dagnaam($nummer)
+{
+    $dagen = [1 => 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag'];
+    return $dagen[$nummer] ?? '';
+}
+
+/* ---------------------------------------------------------------------
  * MELDINGEN (FE10)
  * Een melding zetten we in de sessie en tonen we op de volgende pagina.
  * Soorten: 'succes' (groen) en 'fout' (rood).
