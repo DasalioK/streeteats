@@ -131,6 +131,54 @@ body {
     font-size: 14px;
 }
 
+.knop-rood {
+    background: #b91c1c;
+}
+
+.knop-rood:hover {
+    background: #991b1b;
+}
+
+/* Een link die eruitziet als knop */
+a.knop {
+    display: inline-block;
+    text-decoration: none;
+}
+
+/* Knoppen naast elkaar in een tabelcel */
+.acties {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.formulier textarea {
+    padding: 10px;
+    font-size: 16px;
+    font-family: inherit;
+    border: 1px solid #999;
+    border-radius: 6px;
+}
+
+/* ---- Labels: status met kleur én tekst ---- */
+.label {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.label-groen {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.label-rood {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
 /* ---- Tabellen: op een telefoon kun je opzij scrollen ---- */
 .kaart {
     overflow-x: auto;
