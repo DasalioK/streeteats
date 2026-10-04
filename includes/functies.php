@@ -72,6 +72,19 @@ function vergunning_verlopen($einddatum, $opDatum)
     return $einddatum < $opDatum;
 }
 
+/* Tijd uit de database ('11:00:00') korter tonen: '11:00' */
+function tijd($tekst)
+{
+    return substr($tekst, 0, 5);
+}
+
+/* Datum netjes tonen: '2026-10-04' wordt 'zaterdag 04-10-2026' */
+function datum_tekst($datum)
+{
+    $tijdstip = strtotime($datum);
+    return dagnaam((int) date('N', $tijdstip)) . ' ' . date('d-m-Y', $tijdstip);
+}
+
 /* Naam van de dag: 1 = maandag ... 7 = zondag */
 function dagnaam($nummer)
 {
