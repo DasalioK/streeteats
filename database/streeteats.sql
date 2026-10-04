@@ -125,13 +125,15 @@ INSERT INTO locations (naam, address, city, permit_number, permit_end_date) VALU
 ('Grote Markt', 'Grote Markt 2',      'Haarlem',   'VG-005', CURDATE() + INTERVAL 3 MONTH);
 
 -- Openingstijden: elke plek is elke dag open (dag 1 t/m 7).
--- De Grote Markt is op zondag (7) dicht, om "plek is dicht" te kunnen testen (FE6).
+-- "Plek is dicht" (FE6) test je met een tijd buiten de openingstijden,
+-- bijv. de Grote Markt om 19:00 (die sluit om 18:00).
+-- Een hele dag dicht: verwijder in het scherm Plekken de openingstijd van die dag.
 INSERT INTO opening_hours (location_id, day, open_time, close_time) VALUES
 (1,1,'10:00','22:00'),(1,2,'10:00','22:00'),(1,3,'10:00','22:00'),(1,4,'10:00','22:00'),(1,5,'10:00','22:00'),(1,6,'10:00','22:00'),(1,7,'10:00','22:00'),
 (2,1,'10:00','20:00'),(2,2,'10:00','20:00'),(2,3,'10:00','20:00'),(2,4,'10:00','20:00'),(2,5,'10:00','20:00'),(2,6,'10:00','20:00'),(2,7,'10:00','20:00'),
 (3,1,'11:00','21:00'),(3,2,'11:00','21:00'),(3,3,'11:00','21:00'),(3,4,'11:00','21:00'),(3,5,'11:00','21:00'),(3,6,'11:00','21:00'),(3,7,'11:00','21:00'),
 (4,1,'12:00','23:00'),(4,2,'12:00','23:00'),(4,3,'12:00','23:00'),(4,4,'12:00','23:00'),(4,5,'12:00','23:00'),(4,6,'12:00','23:00'),(4,7,'12:00','23:00'),
-(5,1,'10:00','18:00'),(5,2,'10:00','18:00'),(5,3,'10:00','18:00'),(5,4,'10:00','18:00'),(5,5,'10:00','18:00'),(5,6,'10:00','18:00');
+(5,1,'10:00','18:00'),(5,2,'10:00','18:00'),(5,3,'10:00','18:00'),(5,4,'10:00','18:00'),(5,5,'10:00','18:00'),(5,6,'10:00','18:00'),(5,7,'10:00','18:00');
 
 -- Route 1 (vandaag) is goedgekeurd: bezoekers zien hem.
 -- Route 2 (vandaag) is concept: bezoekers zien hem NIET.

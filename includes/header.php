@@ -33,6 +33,7 @@ $ingelogd = ingelogde_gebruiker();
             <a href="<?= url('beheer/index.php') ?>">Dashboard</a>
             <a href="<?= url('beheer/trucks.php') ?>">Foodtrucks</a>
             <a href="<?= url('beheer/plekken.php') ?>">Plekken</a>
+            <a href="<?= url('beheer/routes.php') ?>">Routes</a>
             <?php if ($ingelogd['role'] === 'beheerder'): ?>
                 <a href="<?= url('beheer/accounts.php') ?>">Accounts</a>
             <?php endif; ?>
