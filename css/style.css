@@ -220,7 +220,85 @@ a.knop {
     padding: 24px 16px;
 }
 
+/* ---- Bezoekerspagina's (FE1, FE2, FE3) ---- */
+.melding-info {
+    background: #dbeafe;
+    color: #1e3a8a;
+}
+
+.label-grijs {
+    background: #e5e5e5;
+    color: #222;
+}
+
+/* Zoekformulier en resultaten: op een telefoon alles onder elkaar */
+.zoekformulier,
+.kaarten,
+.twee-kolommen {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr;
+}
+
+.zoekformulier label {
+    display: block;
+    font-weight: bold;
+}
+
+.zoekformulier input,
+.zoekformulier select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #999;
+    border-radius: 6px;
+}
+
+.zoekformulier .knop {
+    margin-top: 0;
+    width: 100%;
+}
+
+.kaarten .kaart h3 {
+    margin-top: 0;
+}
+
+/* Uitverkocht: doorgestreept én het woord "Uitverkocht" ernaast */
+.uitverkocht td:first-child,
+.uitverkocht td:nth-child(2) {
+    text-decoration: line-through;
+    color: #777;
+}
+
+.paginas {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    margin: 16px 0;
+}
+
 /* ---- Bredere schermen (tablet en computer) ---- */
+@media (min-width: 700px) {
+    /* Zoekformulier op één rij, resultaten in 2 kolommen */
+    .zoekformulier {
+        grid-template-columns: 1fr 1fr 1fr auto;
+        align-items: end;
+    }
+
+    .kaarten,
+    .twee-kolommen {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* ---- Grote schermen (computer): resultaten in 3 kolommen ---- */
+@media (min-width: 1000px) {
+    .kaarten {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
 @media (min-width: 700px) {
     .kop {
         display: flex;
