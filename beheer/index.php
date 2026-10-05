@@ -80,7 +80,7 @@ require __DIR__ . '/../includes/header.php';
         <li><a href="<?= url('beheer/trucks.php') ?>">Foodtrucks</a></li>
         <li><a href="<?= url('beheer/plekken.php') ?>">Plekken, openingstijden en vergunningen</a></li>
         <li><a href="<?= url('beheer/routes.php') ?>">Routes</a></li>
-        <li>Menu <em>(komt op dag 5)</em></li>
+        <li><a href="<?= url('beheer/menu.php') ?>">Menu per dag</a></li>
         <?php if ($gebruiker['role'] === 'beheerder'): ?>
             <li><a href="<?= url('beheer/accounts.php') ?>">Accounts van planners</a></li>
         <?php endif; ?>

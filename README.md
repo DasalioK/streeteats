@@ -35,3 +35,4 @@ Alleen voor testen, geen echte personen. Wachtwoord voor allebei: `demo-password
 | 2 | Inloggen, uitloggen, rollen, accounts voor de beheerder | TE4, TE5 |
 | 3 | Foodtrucks en plekken beheren, openingstijden, vergunningen | FE4, FE7 |
 | 4 | Routes met meerdere stops, dubbele planning en dichte plek blokkeren | FE5, FE6 |
+| 5 | Vergunning-waarschuwing, route goedkeuren, menu per dag met uitverkocht | FE7, FE8, FE9, FE3 |
