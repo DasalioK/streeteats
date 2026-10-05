@@ -11,6 +11,9 @@
  *   3. Alleen als alles klopt, wordt de stop opgeslagen. Anders ziet de planner
  *      precies wat er mis is, en blijft het formulier ingevuld.
  * Alleen een route met de status 'concept' kan worden aangepast.
+ *
+ * Goedkeuren (FE7, FE8): redenen_niet_goedkeuren() controleert alles opnieuw.
+ * Is een vergunning verlopen, of staat een truck dubbel? Dan blijft de route concept.
  */
 
 require __DIR__ . '/../includes/login.php';
@@ -36,6 +39,27 @@ $stop = ['truck_id' => '', 'location_id' => '', 'start_time' => '', 'end_time' =
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     controleer_csrf();
     $actie = $_POST['actie'] ?? '';
+
+    // ---- Route goedkeuren (FE8) ----
+    // Pas na goedkeuren zien bezoekers de route. Bij een probleem blijft hij concept.
+    if ($actie === 'goedkeuren' && $isConcept) {
+        $redenen = redenen_niet_goedkeuren($db, $route);
+
+        if ($redenen) {
+            zet_melding('fout', 'De route is NIET goedgekeurd: ' . implode(' ', $redenen));
+        } else {
+            $db->prepare('UPDATE routes SET status = ? WHERE id = ?')->execute(['goedgekeurd', $routeId]);
+            zet_melding('succes', 'De route is goedgekeurd. Bezoekers kunnen hem nu zien.');
+        }
+        ga_naar('beheer/route.php?id=' . $routeId);
+    }
+
+    // ---- Terug naar concept: om een goedgekeurde route toch nog aan te passen ----
+    if ($actie === 'terug_naar_concept' && !$isConcept) {
+        $db->prepare('UPDATE routes SET status = ? WHERE id = ?')->execute(['concept', $routeId]);
+        zet_melding('succes', 'De route staat weer op concept en is niet meer zichtbaar voor bezoekers.');
+        ga_naar('beheer/route.php?id=' . $routeId);
+    }
 
     // Een goedgekeurde route mag niet meer veranderen (ook niet via een zelfgemaakt formulier)
     if (!$isConcept) {
@@ -146,6 +170,9 @@ $query = $db->prepare(
 $query->execute([$routeId]);
 $stops = $query->fetchAll();
 
+// Plekken in deze route met een verlopen vergunning (FE7): we tonen een waarschuwing
+$verlopen = verlopen_vergunningen($db, $route);
+
 $trucks = $db->query('SELECT id, naam FROM trucks ORDER BY naam')->fetchAll();
 $plekken = $db->query('SELECT id, naam, city FROM locations ORDER BY naam')->fetchAll();
 
@@ -164,6 +191,30 @@ require __DIR__ . '/../includes/header.php';
         <span class="label label-groen">Goedgekeurd</span> (zichtbaar voor bezoekers)
     <?php endif; ?>
 </p>
+
+<?php if ($verlopen): ?>
+    <!-- FE7: de route is wel opgeslagen, maar kan zo niet worden goedgekeurd -->
+    <p class="melding melding-waarschuwing">
+        <strong>Let op:</strong> de vergunning van <?= e(implode(', ', $verlopen)) ?> is verlopen.
+        Deze route kan niet worden goedgekeurd. Kies een andere plek of verleng de vergunning.
+    </p>
+<?php endif; ?>
+
+<div class="kaart">
+    <?php if ($isConcept): ?>
+        <form method="post">
+            <?= csrf_veld() ?>
+            <input type="hidden" name="actie" value="goedkeuren">
+            <button type="submit" class="knop knop-groen">Route goedkeuren</button>
+        </form>
+    <?php else: ?>
+        <form method="post">
+            <?= csrf_veld() ?>
+            <input type="hidden" name="actie" value="terug_naar_concept">
+            <button type="submit" class="knop">Terug naar concept (om aan te passen)</button>
+        </form>
+    <?php endif; ?>
+</div>
 
 <div class="kaart">
     <h2>Stops</h2>

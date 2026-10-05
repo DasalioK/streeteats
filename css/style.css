@@ -131,6 +131,19 @@ body {
     font-size: 14px;
 }
 
+.knop-groen {
+    background: #166534;
+}
+
+.knop-groen:hover {
+    background: #14532d;
+}
+
+.melding-waarschuwing {
+    background: #fef3c7;
+    color: #854d0e;
+}
+
 .knop-rood {
     background: #b91c1c;
 }
