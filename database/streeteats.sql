@@ -44,7 +44,8 @@ CREATE TABLE locations (
     address         VARCHAR(150) NOT NULL,
     city            VARCHAR(100) NOT NULL,  -- plaats, nodig om op plaats te zoeken (FE1)
     permit_number   VARCHAR(50)  NOT NULL,
-    permit_end_date DATE         NOT NULL
+    permit_end_date DATE         NOT NULL,
+    INDEX (city)   -- ontwerp H11: index op plaats, zodat zoeken snel blijft
 );
 
 -- opening_hours: openingstijden van een plek per dag (1 = maandag ... 7 = zondag)
@@ -66,6 +67,7 @@ CREATE TABLE routes (
     route_date DATE NOT NULL,
     status     ENUM('concept', 'goedgekeurd') NOT NULL DEFAULT 'concept',
     created_by INT NOT NULL,
+    INDEX (route_date),   -- ontwerp H11: index op datum, zodat zoeken snel blijft
     FOREIGN KEY (created_by) REFERENCES users(id)
 );
 
