@@ -71,3 +71,66 @@ function controleer_stop($db, $datum, $truckId, $plekId, $begin, $eind, $negeerS
 
     return $fouten;
 }
+
+/*
+ * VERGUNNINGEN VAN EEN ROUTE (FE7)
+ * Geeft de namen terug van de plekken in deze route waarvan de vergunning
+ * op de routedatum verlopen is. Lege lijst = alle vergunningen zijn geldig.
+ *
+ * Ontwerp H9: een route met een verlopen vergunning wordt WEL opgeslagen (met een waarschuwing),
+ * maar kan NIET worden goedgekeurd.
+ */
+function verlopen_vergunningen($db, $route)
+{
+    $query = $db->prepare(
+        'SELECT DISTINCT locations.naam, locations.permit_end_date
+         FROM stops
+         JOIN locations ON locations.id = stops.location_id
+         WHERE stops.route_id = ?'
+    );
+    $query->execute([$route['id']]);
+
+    $verlopen = [];
+    foreach ($query->fetchAll() as $plek) {
+        if (vergunning_verlopen($plek['permit_end_date'], $route['route_date'])) {
+            $verlopen[] = $plek['naam'];
+        }
+    }
+    return $verlopen;
+}
+
+/*
+ * MAG DEZE ROUTE WORDEN GOEDGEKEURD? (FE8)
+ * Geeft een lijst met redenen waarom het (nog) niet mag. Lege lijst = goedkeuren mag.
+ *
+ * We controleren bij het goedkeuren ALLES opnieuw. Er kan sinds het opslaan namelijk
+ * iets veranderd zijn, bijvoorbeeld een andere route met dezelfde truck, of een vergunning
+ * die intussen is verlopen.
+ */
+function redenen_niet_goedkeuren($db, $route)
+{
+    $redenen = [];
+
+    $query = $db->prepare('SELECT * FROM stops WHERE route_id = ?');
+    $query->execute([$route['id']]);
+    $stops = $query->fetchAll();
+
+    // Een lege route heeft geen zin voor bezoekers
+    if (!$stops) {
+        return ['De route heeft nog geen stops.'];
+    }
+
+    // Elke stop opnieuw controleren op dubbele planning en openingstijden (FE6)
+    foreach ($stops as $stop) {
+        $fouten = controleer_stop($db, $route['route_date'], $stop['truck_id'], $stop['location_id'], tijd($stop['start_time']), tijd($stop['end_time']), $stop['id']);
+        $redenen = array_merge($redenen, $fouten);
+    }
+
+    // Vergunningen controleren (FE7)
+    foreach (verlopen_vergunningen($db, $route) as $plek) {
+        $redenen[] = 'De vergunning van ' . $plek . ' is verlopen. De route kan niet worden goedgekeurd.';
+    }
+
+    // array_unique: dezelfde melding maar één keer tonen
+    return array_values(array_unique($redenen));
+}
