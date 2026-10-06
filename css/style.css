@@ -32,17 +32,19 @@ body {
     text-decoration: none;
 }
 
-/* Op een telefoon staan de menu-items onder elkaar */
+/* Op een telefoon staan de menu-items naast elkaar en lopen ze door naar de volgende regel.
+   Eerst stonden ze allemaal onder elkaar: met 8 links was het menu dan een half scherm hoog. */
 .menu {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 4px 16px;
     margin-top: 8px;
 }
 
 .menu a {
     color: #fff;
     text-decoration: none;
-    padding: 10px 0;
+    padding: 8px 0;    /* genoeg ruimte om met een vinger te raken */
 }
 
 .menu a:hover {
@@ -304,12 +306,14 @@ a.knop {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        gap: 16px;
     }
 
-    /* Menu-items naast elkaar */
+    /* Menu-items naast elkaar, rechts uitgelijnd. Past het niet, dan gaat het naar een
+       volgende regel in plaats van buiten het scherm (eerst gaf dat een scrollbalk op tablets). */
     .menu {
-        flex-direction: row;
-        gap: 20px;
+        justify-content: flex-end;
+        gap: 4px 20px;
         margin-top: 0;
     }
 }
