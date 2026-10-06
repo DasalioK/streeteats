@@ -18,6 +18,9 @@ Student: Dasalio (2211524) · MBO 4 Software Developer · KT1-W3 Realisatie
 4. Kopieer `includes/config.example.php` naar `includes/config.php` en pas zo nodig de gegevens aan.
 5. Open <http://localhost/streeteats/>.
 
+> **Tip voor een demo:** de testdata gebruikt de datum van de dag waarop je importeert (`CURDATE()`).
+> Importeer `database/streeteats.sql` dus op de dag van de demo opnieuw, dan staan de routes op "vandaag" en "morgen".
+
 ## Testaccounts
 
 Alleen voor testen, geen echte personen. Wachtwoord voor allebei: `demo-password`
@@ -37,3 +40,4 @@ Alleen voor testen, geen echte personen. Wachtwoord voor allebei: `demo-password
 | 4 | Routes met meerdere stops, dubbele planning en dichte plek blokkeren | FE5, FE6 |
 | 5 | Vergunning-waarschuwing, route goedkeuren, menu per dag met uitverkocht | FE7, FE8, FE9, FE3 |
 | 6 | Zoeken voor bezoekers (12 per pagina), truckpagina met menu | FE1, FE2, FE3, FE8 |
+| 7 | Testen en verbeteren: technische fouten afvangen, menu op telefoon en tablet | FE10, TE3 |

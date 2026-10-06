@@ -20,7 +20,9 @@ $ingelogd = ingelogde_gebruiker();
     <!-- Deze regel zorgt dat de site op een telefoon goed geschaald wordt (TE3) -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($titel ?? 'StreetEats') ?> - StreetEats</title>
-    <link rel="stylesheet" href="<?= url('css/style.css') ?>">
+    <!-- ?v=... is de tijd waarop style.css voor het laatst is aangepast. Verandert het bestand,
+         dan verandert de link, en haalt de browser de nieuwe versie op in plaats van een oude uit zijn geheugen. -->
+    <link rel="stylesheet" href="<?= url('css/style.css') ?>?v=<?= filemtime(__DIR__ . '/../css/style.css') ?>">
 </head>
 <body>
 
@@ -38,7 +40,7 @@ $ingelogd = ingelogde_gebruiker();
             <?php if ($ingelogd['role'] === 'beheerder'): ?>
                 <a href="<?= url('beheer/accounts.php') ?>">Accounts</a>
             <?php endif; ?>
-            <a href="<?= url('logout.php') ?>">Uitloggen (<?= e($ingelogd['naam']) ?>)</a>
+            <a href="<?= url('logout.php') ?>">Uitloggen</a>
         <?php else: ?>
             <a href="<?= url('login.php') ?>">Inloggen</a>
         <?php endif; ?>
