@@ -41,3 +41,17 @@ Alleen voor testen, geen echte personen. Wachtwoord voor allebei: `demo-password
 | 5 | Vergunning-waarschuwing, route goedkeuren, menu per dag met uitverkocht | FE7, FE8, FE9, FE3 |
 | 6 | Zoeken voor bezoekers (12 per pagina), truckpagina met menu | FE1, FE2, FE3, FE8 |
 | 7 | Testen en verbeteren: technische fouten afvangen, menu op telefoon en tablet | FE10, TE3 |
+| 8 | Openingstijden op de truckpagina, gerecht wijzigen, documentatie | FE-02, FE-14, T-34, T-35 |
+
+## Documentatie
+
+| Bestand | Inhoud |
+|---|---|
+| `docs/koppeltabel.md` | Per eis: ontwerp, planningstaak, bestand en test |
+| `docs/verschillen.md` | Verschillen tussen planning, ontwerp en product, met reden |
+| `docs/testrapport.md` | Hoe er getest is en de resultaten (149 tests) |
+| `docs/checklist-bewijs.md` | Bewijs per punt van de KT1-W3-checklist |
+
+## Broncode
+
+Openbaar op GitHub: https://github.com/DasalioK/streeteats (zie ook `github.txt`).

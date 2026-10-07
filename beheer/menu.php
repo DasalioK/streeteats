@@ -3,6 +3,7 @@
  * MENU BEHEREN
  * Technisch ontwerp H5: "Menu - Planner/beheerder - Gerechten per dag toevoegen en op uitverkocht zetten"
  * Hoort bij: FE9 (menu beheren), FE3 (uitverkocht), TE4 (invoer controleren), TE5 (rechten)
+ *           Planning: FE-14 (menu per dag maken en aanpassen), FE-04 (uitverkocht), taken T-25 en T-26
  *
  * Uitleg:
  * - Bovenaan kies je een truck en een datum. Je ziet dan het menu van die truck op die dag.
@@ -31,7 +32,7 @@ if (!in_array($truckId, $truckIds) && $trucks) {
 }
 
 $fouten = [];
-$gerecht = ['name' => '', 'price' => ''];
+$gerecht = ['id' => '', 'name' => '', 'price' => ''];
 
 // Na een actie gaan we terug naar dezelfde truck en datum
 $terug = 'beheer/menu.php?truck=' . $truckId . '&datum=' . $datum;
@@ -40,8 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     controleer_csrf();
     $actie = $_POST['actie'] ?? '';
 
-    // ---- Gerecht toevoegen ----
-    if ($actie === 'toevoegen') {
+    // ---- Gerecht opslaan: nieuw (geen id) of wijzigen (wel een id), net als bij trucks.php ----
+    if ($actie === 'opslaan') {
+        $gerecht['id'] = (int) ($_POST['id'] ?? 0);
         $gerecht['name'] = trim($_POST['name'] ?? '');
         // Komma mag ook: 8,50 wordt 8.50
         $gerecht['price'] = str_replace(',', '.', trim($_POST['price'] ?? ''));
@@ -60,9 +62,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (empty($fouten)) {
-            $query = $db->prepare('INSERT INTO menu_items (truck_id, name, price, available, menu_date) VALUES (?, ?, ?, 1, ?)');
-            $query->execute([$truckId, $gerecht['name'], $gerecht['price'], $datum]);
-            zet_melding('succes', $gerecht['name'] . ' is toegevoegd aan het menu.');
+            if ($gerecht['id'] > 0) {
+                // Wijzigen. "AND truck_id = ?": alleen een gerecht van de gekozen truck
+                $query = $db->prepare('UPDATE menu_items SET name = ?, price = ? WHERE id = ? AND truck_id = ?');
+                $query->execute([$gerecht['name'], $gerecht['price'], $gerecht['id'], $truckId]);
+                zet_melding('succes', $gerecht['name'] . ' is gewijzigd.');
+            } else {
+                $query = $db->prepare('INSERT INTO menu_items (truck_id, name, price, available, menu_date) VALUES (?, ?, ?, 1, ?)');
+                $query->execute([$truckId, $gerecht['name'], $gerecht['price'], $datum]);
+                zet_melding('succes', $gerecht['name'] . ' is toegevoegd aan het menu.');
+            }
             ga_naar($terug);
         }
     }
@@ -82,6 +91,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query->execute([(int) ($_POST['id'] ?? 0), $truckId]);
         zet_melding('succes', 'Het gerecht is verwijderd.');
         ga_naar($terug);
+    }
+}
+
+// ---- Wijzigen: gerecht ophalen om in het formulier te zetten (?bewerk=..) ----
+if (isset($_GET['bewerk']) && empty($fouten)) {
+    $query = $db->prepare('SELECT id, name, price FROM menu_items WHERE id = ? AND truck_id = ?');
+    $query->execute([(int) $_GET['bewerk'], $truckId]);
+    $gevonden = $query->fetch();
+    if ($gevonden) {
+        $gerecht = $gevonden;
+        $gerecht['price'] = str_replace('.', ',', $gerecht['price']);   // 8.50 tonen als 8,50
     }
 }
 
@@ -138,6 +158,7 @@ require __DIR__ . '/../includes/header.php';
                         <?php endif; ?>
                     </td>
                     <td class="acties">
+                        <a class="knop knop-klein" href="?truck=<?= e($truckId) ?>&amp;datum=<?= e($datum) ?>&amp;bewerk=<?= e($item['id']) ?>">Wijzigen</a>
                         <form method="post">
                             <?= csrf_veld() ?>
                             <input type="hidden" name="actie" value="uitverkocht">
@@ -160,7 +181,7 @@ require __DIR__ . '/../includes/header.php';
 </div>
 
 <div class="kaart">
-    <h2>Gerecht toevoegen</h2>
+    <h2><?= $gerecht['id'] ? 'Gerecht wijzigen' : 'Gerecht toevoegen' ?></h2>
 
     <?php if ($fouten): ?>
         <p class="melding melding-fout"><strong>Fout:</strong> Het gerecht is niet opgeslagen. Controleer de velden.</p>
@@ -168,7 +189,8 @@ require __DIR__ . '/../includes/header.php';
 
     <form method="post" class="formulier">
         <?= csrf_veld() ?>
-        <input type="hidden" name="actie" value="toevoegen">
+        <input type="hidden" name="actie" value="opslaan">
+        <input type="hidden" name="id" value="<?= e($gerecht['id']) ?>">
 
         <label for="name">Naam van het gerecht</label>
         <input type="text" id="name" name="name" maxlength="100" value="<?= e($gerecht['name']) ?>">
@@ -178,7 +200,10 @@ require __DIR__ . '/../includes/header.php';
         <input type="text" id="price" name="price" inputmode="decimal" placeholder="8,50" value="<?= e($gerecht['price']) ?>">
         <?php if (isset($fouten['price'])): ?><span class="veld-fout"><?= e($fouten['price']) ?></span><?php endif; ?>
 
-        <button type="submit" class="knop">Toevoegen</button>
+        <button type="submit" class="knop"><?= $gerecht['id'] ? 'Opslaan' : 'Toevoegen' ?></button>
+        <?php if ($gerecht['id']): ?>
+            <a href="?truck=<?= e($truckId) ?>&amp;datum=<?= e($datum) ?>">Annuleren</a>
+        <?php endif; ?>
     </form>
 </div>
 

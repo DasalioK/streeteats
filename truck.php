@@ -3,6 +3,7 @@
  * TRUCKPAGINA
  * Technisch ontwerp H5: "Truckpagina - Iedereen - Plek, tijden en menu van een truck bekijken"
  * Hoort bij: FE2 (truck en menu bekijken), FE3 (uitverkocht tonen), FE8 (alleen goedgekeurd)
+ *           Planning: FE-02, FE-03, FE-04, FE-13 en taak T-28 (dagagenda: plek, tijden en menu zichtbaar)
  *
  * Uitleg:
  * - De link ziet er zo uit: truck.php?id=1&datum=2026-10-05
@@ -29,15 +30,19 @@ if (!$truck) {
 }
 
 // ---- Waar en hoe laat staat de truck op deze dag? (alleen goedgekeurd: FE8) ----
+// Planning FE-02: de bezoeker ziet ook de openingstijden van de plek op die dag.
+// Daarom koppelen we opening_hours erbij, voor de weekdag van de gekozen datum (1 = maandag ... 7 = zondag).
 $query = $db->prepare(
-    'SELECT locations.naam AS plek, locations.address, locations.city, stops.start_time, stops.end_time
+    'SELECT locations.naam AS plek, locations.address, locations.city, stops.start_time, stops.end_time,
+            opening_hours.open_time, opening_hours.close_time
      FROM stops
      JOIN routes    ON routes.id = stops.route_id
      JOIN locations ON locations.id = stops.location_id
+     LEFT JOIN opening_hours ON opening_hours.location_id = locations.id AND opening_hours.day = ?
      WHERE stops.truck_id = ? AND routes.route_date = ? AND routes.status = ?
      ORDER BY stops.start_time'
 );
-$query->execute([$truck['id'], $datum, 'goedgekeurd']);
+$query->execute([(int) date('N', strtotime($datum)), $truck['id'], $datum, 'goedgekeurd']);
 $stops = $query->fetchAll();
 
 // ---- Het menu van deze dag ----
@@ -81,6 +86,9 @@ require 'includes/header.php';
                     <li>
                         <strong><?= e(tijd($s['start_time'])) ?> - <?= e(tijd($s['end_time'])) ?> uur</strong>:
                         <?= e($s['plek']) ?>, <?= e($s['address']) ?>, <?= e($s['city']) ?>
+                        <?php if ($s['open_time']): ?>
+                            <br><small>Openingstijden van deze plek: <?= e(tijd($s['open_time'])) ?> - <?= e(tijd($s['close_time'])) ?> uur</small>
+                        <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
             </ul>
