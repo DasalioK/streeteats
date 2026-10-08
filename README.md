@@ -55,3 +55,5 @@ Alleen voor testen, geen echte personen. Wachtwoord voor allebei: `demo-password
 ## Broncode
 
 Openbaar op GitHub: https://github.com/DasalioK/streeteats (zie ook `github.txt`).
+
+**Definitieve versie: tag `v1.0.1`** op de branch `main`.
