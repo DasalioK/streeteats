@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Instellingen voor PHPUnit (KT1-W4).
+    - Unit: losse functies, zonder database.
+    - Integratie: de regels van de planning samen met de database (testdatabase streeteats_test).
+    - source: welke code meetelt voor de coverage (testdekking).
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         testdox="true"
+         cacheDirectory="tests/.phpunit.cache">
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integratie">
+            <directory>tests/Integratie</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <file>includes/functies.php</file>
+            <file>includes/controles.php</file>
+            <file>includes/login.php</file>
+        </include>
+    </source>
+</phpunit>
