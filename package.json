@@ -1,0 +1,11 @@
+{
+  "name": "streeteats-e2e",
+  "private": true,
+  "description": "End-to-end-tests van StreetEats met Playwright (KT1-W4): de browser doet wat een gebruiker doet en neemt het op als video.",
+  "scripts": {
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

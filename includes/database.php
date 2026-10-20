@@ -35,9 +35,13 @@ set_exception_handler(function ($fout) use ($config) {
         . '<p><a href="' . htmlspecialchars($config['basis_url']) . '/">Naar de startpagina</a></p></body></html>';
 });
 
+// Tijdens het testen (PHPUnit) gebruiken we een aparte testdatabase, zodat de echte gegevens heel blijven.
+// De tests zetten daarvoor STREETEATS_TEST_DB; op de gewone website is die leeg.
+$dbNaam = getenv('STREETEATS_TEST_DB') ?: $config['db_naam'];
+
 try {
     $db = new PDO(
-        'mysql:host=' . $config['db_host'] . ';dbname=' . $config['db_naam'] . ';charset=utf8mb4',
+        'mysql:host=' . $config['db_host'] . ';dbname=' . $dbNaam . ';charset=utf8mb4',
         $config['db_gebruiker'],
         $config['db_wachtwoord']
     );

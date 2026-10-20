@@ -3,3 +3,13 @@ includes/config.php
 
 # Mijn persoonlijke examenaantekeningen, geen onderdeel van de code
 EXAMEN-UITLEG.md
+
+# Testframework (wordt opnieuw geïnstalleerd met "composer install") en het gemaakte coverage-rapport
+vendor/
+tests/coverage/
+tests/.phpunit.cache/
+
+# End-to-end-tests: Playwright zelf (opnieuw te installeren met "npm install") en de opgenomen video's en rapporten
+node_modules/
+tests/e2e-resultaten/
+tests/e2e-rapport/
