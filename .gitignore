@@ -13,3 +13,4 @@ tests/.phpunit.cache/
 node_modules/
 tests/e2e-resultaten/
 tests/e2e-rapport/
+tests/e2e-bewijs/

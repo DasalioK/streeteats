@@ -53,7 +53,7 @@ function vereis_rol($rollen)
         require __DIR__ . '/header.php';
         echo '<p class="melding melding-fout"><strong>Fout:</strong> Je hebt geen toegang tot deze pagina.</p>';
         require __DIR__ . '/footer.php';
-        exit;
+        stoppen();
     }
 
     return $gebruiker;

@@ -11,6 +11,11 @@ function resetDatabase() {
     execSync('"C:\\xamp\\mysql\\bin\\mysql.exe" -u root --default-character-set=utf8mb4', { input: sql });
 }
 
+// Extra testgegevens klaarzetten voor één test (bijv. 13 stops om het bladeren te testen)
+function voerSqlUit(sql) {
+    execSync('"C:\\xamp\\mysql\\bin\\mysql.exe" -u root --default-character-set=utf8mb4 streeteats', { input: sql });
+}
+
 const willekeurig = (min, max) => min + Math.random() * (max - min);
 
 // ---------------------------------------------------------------------------------------------
@@ -270,4 +275,9 @@ async function inloggen(page, email, wachtwoord) {
     await klik(page, page.getByRole('button', { name: 'Inloggen' }));
 }
 
-module.exports = { resetDatabase, start, pauze, muisNaar, scrollNaar, beweegNaar, klik, typ, typTijd, kies, bekijk, inloggen };
+// Screenshot als bewijs, bijv. bewijs(page, 'E2E-02-dubbele-stop-geweigerd') -> tests/e2e-bewijs/E2E-02-dubbele-stop-geweigerd.png
+async function bewijs(page, naam) {
+    await page.screenshot({ path: path.join(__dirname, '../e2e-bewijs', naam + '.png'), fullPage: true });
+}
+
+module.exports = { resetDatabase, voerSqlUit, start, pauze, muisNaar, scrollNaar, beweegNaar, klik, typ, typTijd, kies, bekijk, inloggen, bewijs };
