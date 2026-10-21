@@ -45,6 +45,19 @@ function url($pad = '')
 function ga_naar($pad)
 {
     header('Location: ' . url($pad));
+    stoppen();
+}
+
+/*
+ * stoppen() stopt het script (exit), bijvoorbeeld na een doorverwijzing of een "geen toegang".
+ * Tijdens de tests (PHPUnit) stoppen we niet echt, maar geven we een seintje (exception).
+ * Anders zou PHPUnit zelf ook stoppen en kunnen we deze stukken code niet testen.
+ */
+function stoppen()
+{
+    if (getenv('STREETEATS_TEST_DB')) {
+        throw new RuntimeException('Script gestopt');
+    }
     exit;
 }
 
@@ -139,6 +152,7 @@ function controleer_csrf()
 {
     if (!isset($_POST['csrf'], $_SESSION['csrf']) || !hash_equals($_SESSION['csrf'], $_POST['csrf'])) {
         http_response_code(403); // 403 = verboden
-        exit('Je sessie is verlopen. Ga terug, ververs de pagina en probeer het opnieuw.');
+        echo 'Je sessie is verlopen. Ga terug, ververs de pagina en probeer het opnieuw.';
+        stoppen();
     }
 }
