@@ -17,28 +17,28 @@ final class FunctiesTest extends TestCase
     // ---------------- e(): veilig tonen (TE-05, XSS) ----------------
 
     #[Group('TE-05')]
-    #[TestDox('e() maakt een <script>-tag onschadelijk')]
+    #[TestDox('UT01 · e() maakt een <script>-tag onschadelijk')]
     public function testEscapeScript(): void
     {
         $this->assertSame('&lt;script&gt;alert(1)&lt;/script&gt;', e('<script>alert(1)</script>'));
     }
 
     #[Group('TE-05')]
-    #[TestDox('e() maakt aanhalingstekens onschadelijk (randgeval: invoer in een HTML-attribuut)')]
+    #[TestDox('UT02 · e() maakt aanhalingstekens onschadelijk (randgeval: invoer in een HTML-attribuut)')]
     public function testEscapeAanhalingstekens(): void
     {
         $this->assertSame('&quot; onmouseover=&quot;x&#039;', e('" onmouseover="x\''));
     }
 
     #[Group('TE-05')]
-    #[TestDox('e() laat gewone tekst ongemoeid, ook met é en €')]
+    #[TestDox('UT03 · e() laat gewone tekst ongemoeid, ook met é en €')]
     public function testEscapeGewoneTekst(): void
     {
         $this->assertSame('Café Crème € 9,50', e('Café Crème € 9,50'));
     }
 
     #[Group('TE-05')]
-    #[TestDox('e() werkt ook met een getal of null (randgeval)')]
+    #[TestDox('UT04 · e() werkt ook met een getal of null (randgeval)')]
     public function testEscapeGeenTekst(): void
     {
         $this->assertSame('12', e(12));
@@ -64,7 +64,7 @@ final class FunctiesTest extends TestCase
 
     #[DataProvider('datums')]
     #[Group('TE-04')]
-    #[TestDox('is_geldige_datum("$datum") geeft $verwacht')]
+    #[TestDox('UT05 · is_geldige_datum("$datum") geeft $verwacht')]
     public function testGeldigeDatum(string $datum, bool $verwacht): void
     {
         $this->assertSame($verwacht, is_geldige_datum($datum));
@@ -88,7 +88,7 @@ final class FunctiesTest extends TestCase
 
     #[DataProvider('tijden')]
     #[Group('TE-04')]
-    #[TestDox('is_geldige_tijd("$tijd") geeft $verwacht')]
+    #[TestDox('UT06 · is_geldige_tijd("$tijd") geeft $verwacht')]
     public function testGeldigeTijd(string $tijd, bool $verwacht): void
     {
         $this->assertSame($verwacht, is_geldige_tijd($tijd));
@@ -97,28 +97,28 @@ final class FunctiesTest extends TestCase
     // ---------------- vergunning_verlopen() (FE-11) ----------------
 
     #[Group('FE-11')]
-    #[TestDox('Vergunning is NIET verlopen op de laatste geldige dag (randgeval)')]
+    #[TestDox('UT07 · Vergunning is NIET verlopen op de laatste geldige dag (randgeval)')]
     public function testVergunningLaatsteDag(): void
     {
         $this->assertFalse(vergunning_verlopen('2026-10-20', '2026-10-20'));
     }
 
     #[Group('FE-11')]
-    #[TestDox('Vergunning IS verlopen op de dag na de einddatum (randgeval)')]
+    #[TestDox('UT08 · Vergunning IS verlopen op de dag na de einddatum (randgeval)')]
     public function testVergunningDagErna(): void
     {
         $this->assertTrue(vergunning_verlopen('2026-10-20', '2026-10-21'));
     }
 
     #[Group('FE-11')]
-    #[TestDox('Vergunning die nog lang geldig is, is niet verlopen')]
+    #[TestDox('UT09 · Vergunning die nog lang geldig is, is niet verlopen')]
     public function testVergunningGeldig(): void
     {
         $this->assertFalse(vergunning_verlopen('2027-06-30', '2026-10-20'));
     }
 
     #[Group('FE-11')]
-    #[TestDox('Vergunning over de jaargrens: 31-12 geldig, 1-1 verlopen (randgeval)')]
+    #[TestDox('UT10 · Vergunning over de jaargrens: 31-12 geldig, 1-1 verlopen (randgeval)')]
     public function testVergunningJaargrens(): void
     {
         $this->assertFalse(vergunning_verlopen('2026-12-31', '2026-12-31'));
@@ -128,14 +128,14 @@ final class FunctiesTest extends TestCase
     // ---------------- tijd(), datum_tekst(), dagnaam() ----------------
 
     #[Group('FE-02')]
-    #[TestDox('tijd() maakt van 11:00:00 uit de database 11:00')]
+    #[TestDox('UT11 · tijd() maakt van 11:00:00 uit de database 11:00')]
     public function testTijdKorter(): void
     {
         $this->assertSame('11:00', tijd('11:00:00'));
     }
 
     #[Group('FE-01')]
-    #[TestDox('datum_tekst() toont de dag en de datum, bijvoorbeeld "dinsdag 20-10-2026"')]
+    #[TestDox('UT12 · datum_tekst() toont de dag en de datum, bijvoorbeeld "dinsdag 20-10-2026"')]
     public function testDatumTekst(): void
     {
         $this->assertSame('dinsdag 20-10-2026', datum_tekst('2026-10-20'));
@@ -143,7 +143,7 @@ final class FunctiesTest extends TestCase
     }
 
     #[Group('FE-07')]
-    #[TestDox('dagnaam() kent maandag (1) t/m zondag (7) en geeft leeg bij 0 of 8 (randgeval)')]
+    #[TestDox('UT13 · dagnaam() kent maandag (1) t/m zondag (7) en geeft leeg bij 0 of 8 (randgeval)')]
     public function testDagnaam(): void
     {
         $this->assertSame('maandag', dagnaam(1));
@@ -152,7 +152,7 @@ final class FunctiesTest extends TestCase
         $this->assertSame('', dagnaam(8));
     }
 
-    #[TestDox('url() maakt een link binnen de website')]
+    #[TestDox('UT14 · url() maakt een link binnen de website')]
     public function testUrl(): void
     {
         $this->assertSame('/streeteats/beheer/trucks.php', url('beheer/trucks.php'));
@@ -161,7 +161,7 @@ final class FunctiesTest extends TestCase
     // ---------------- meldingen (FE-16) ----------------
 
     #[Group('FE-16')]
-    #[TestDox('Een succesmelding verschijnt één keer, met het woord "Gelukt:" erbij')]
+    #[TestDox('UT15 · Een succesmelding verschijnt één keer, met het woord "Gelukt:" erbij')]
     public function testMeldingSucces(): void
     {
         zet_melding('succes', 'Foodtruck is toegevoegd.');
@@ -180,7 +180,7 @@ final class FunctiesTest extends TestCase
     }
 
     #[Group('FE-16')]
-    #[TestDox('Een foutmelding krijgt het woord "Fout:" en wordt veilig getoond')]
+    #[TestDox('UT16 · Een foutmelding krijgt het woord "Fout:" en wordt veilig getoond')]
     public function testMeldingFout(): void
     {
         zet_melding('fout', 'Naam <b> mag niet');
@@ -196,7 +196,7 @@ final class FunctiesTest extends TestCase
     // ---------------- CSRF (TE-06) ----------------
 
     #[Group('TE-06')]
-    #[TestDox('csrf_veld() maakt een verborgen veld met een geheime code van 64 tekens')]
+    #[TestDox('UT17 · csrf_veld() maakt een verborgen veld met een geheime code van 64 tekens')]
     public function testCsrfVeld(): void
     {
         $veld = csrf_veld();

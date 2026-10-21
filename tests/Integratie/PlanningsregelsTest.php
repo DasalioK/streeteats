@@ -45,14 +45,14 @@ final class PlanningsregelsTest extends TestCase
     // ================= FE-10: dubbele planning =================
 
     #[Group('FE-10')]
-    #[TestDox('Happy flow: een truck die nog vrij is, mag op een open plek staan')]
+    #[TestDox('IT01 · Happy flow: een truck die nog vrij is, mag op een open plek staan')]
     public function testVrijeTruck(): void
     {
         $this->assertSame([], controleer_stop($this->db, $this->vandaag, self::TACO, self::DAM, '15:00', '17:00'));
     }
 
     #[Group('FE-10')]
-    #[TestDox('Unhappy flow: overlap wordt gevonden en de melding noemt truck, plek en tijden')]
+    #[TestDox('IT02 · Unhappy flow: overlap wordt gevonden en de melding noemt truck, plek en tijden')]
     public function testOverlap(): void
     {
         $fouten = controleer_stop($this->db, $this->vandaag, self::BURGER, self::WESTERPARK, '13:00', '15:00');
@@ -61,42 +61,42 @@ final class PlanningsregelsTest extends TestCase
     }
 
     #[Group('FE-10')]
-    #[TestDox('Randgeval: precies aansluiten (14:00 na 11:00-14:00, en tot 15:00 vóór 15:00-19:00) is GEEN overlap')]
+    #[TestDox('IT03 · Randgeval: precies aansluiten (14:00 na 11:00-14:00, en tot 15:00 vóór 15:00-19:00) is GEEN overlap')]
     public function testAansluiten(): void
     {
         $this->assertSame([], controleer_stop($this->db, $this->vandaag, self::BURGER, self::WESTERPARK, '14:00', '15:00'));
     }
 
     #[Group('FE-10')]
-    #[TestDox('Randgeval: één minuut overlap (13:59) wordt wél gevonden')]
+    #[TestDox('IT04 · Randgeval: één minuut overlap (13:59) wordt wél gevonden')]
     public function testEenMinuutOverlap(): void
     {
         $this->assertCount(1, controleer_stop($this->db, $this->vandaag, self::BURGER, self::WESTERPARK, '13:59', '14:30'));
     }
 
     #[Group('FE-10')]
-    #[TestDox('Randgeval: een stop die twee bestaande stops omsluit, geeft twee meldingen')]
+    #[TestDox('IT05 · Randgeval: een stop die twee bestaande stops omsluit, geeft twee meldingen')]
     public function testOmsluiten(): void
     {
         $this->assertCount(2, controleer_stop($this->db, $this->vandaag, self::BURGER, self::DAM, '10:00', '20:00'));
     }
 
     #[Group('FE-10')]
-    #[TestDox('Dezelfde tijden op een andere dag zijn geen overlap')]
+    #[TestDox('IT06 · Dezelfde tijden op een andere dag zijn geen overlap')]
     public function testAndereDag(): void
     {
         $this->assertSame([], controleer_stop($this->db, $this->morgen, self::BURGER, self::DAM, '11:00', '14:00'));
     }
 
     #[Group('FE-10')]
-    #[TestDox('Twee verschillende trucks mogen tegelijk op dezelfde plek staan')]
+    #[TestDox('IT07 · Twee verschillende trucks mogen tegelijk op dezelfde plek staan')]
     public function testAndereTruckZelfdePlek(): void
     {
         $this->assertSame([], controleer_stop($this->db, $this->vandaag, self::TACO, self::DAM, '11:00', '14:00'));
     }
 
     #[Group('FE-10')]
-    #[TestDox('Bij het opnieuw controleren van een bestaande stop botst die stop niet met zichzelf')]
+    #[TestDox('IT08 · Bij het opnieuw controleren van een bestaande stop botst die stop niet met zichzelf')]
     public function testNegeerZichzelf(): void
     {
         $this->assertSame([], controleer_stop($this->db, $this->vandaag, self::BURGER, self::DAM, '11:00', '14:00', 1));
@@ -105,14 +105,14 @@ final class PlanningsregelsTest extends TestCase
     // ================= FE-10 / ontwerp H9: plek dicht =================
 
     #[Group('FE-10')]
-    #[TestDox('Randgeval: precies tot sluitingstijd (16:00-18:00 op de Grote Markt) mag')]
+    #[TestDox('IT09 · Randgeval: precies tot sluitingstijd (16:00-18:00 op de Grote Markt) mag')]
     public function testTotSluitingstijd(): void
     {
         $this->assertSame([], controleer_stop($this->db, $this->vandaag, self::PIZZA, self::GROTE_MARKT, '16:00', '18:00'));
     }
 
     #[Group('FE-10')]
-    #[TestDox('Unhappy flow: één minuut na sluitingstijd (18:01) wordt geweigerd')]
+    #[TestDox('IT10 · Unhappy flow: één minuut na sluitingstijd (18:01) wordt geweigerd')]
     public function testNaSluitingstijd(): void
     {
         $fouten = controleer_stop($this->db, $this->vandaag, self::TACO, self::GROTE_MARKT, '17:00', '18:01');
@@ -121,14 +121,14 @@ final class PlanningsregelsTest extends TestCase
     }
 
     #[Group('FE-10')]
-    #[TestDox('Unhappy flow: vóór openingstijd (10:59 in het Westerpark, open vanaf 11:00) wordt geweigerd')]
+    #[TestDox('IT11 · Unhappy flow: vóór openingstijd (10:59 in het Westerpark, open vanaf 11:00) wordt geweigerd')]
     public function testVoorOpeningstijd(): void
     {
         $this->assertStringContainsString('alleen open van 11:00 tot 21:00', controleer_stop($this->db, $this->vandaag, self::TACO, self::WESTERPARK, '10:59', '12:00')[0]);
     }
 
     #[Group('FE-07')]
-    #[TestDox('Unhappy flow: een plek zonder openingstijd op die dag is dicht')]
+    #[TestDox('IT12 · Unhappy flow: een plek zonder openingstijd op die dag is dicht')]
     public function testPlekDicht(): void
     {
         $dag = (int) date('N');
@@ -141,21 +141,21 @@ final class PlanningsregelsTest extends TestCase
     // ================= FE-11 / FE-12: vergunning en goedkeuren =================
 
     #[Group('FE-11')]
-    #[TestDox('De route van morgen met NDSM heeft een verlopen vergunning')]
+    #[TestDox('IT13 · De route van morgen met NDSM heeft een verlopen vergunning')]
     public function testVerlopenVergunning(): void
     {
         $this->assertSame(['NDSM'], verlopen_vergunningen($this->db, $this->route(3)));
     }
 
     #[Group('FE-11')]
-    #[TestDox('De goedgekeurde route van vandaag heeft alleen geldige vergunningen')]
+    #[TestDox('IT14 · De goedgekeurde route van vandaag heeft alleen geldige vergunningen')]
     public function testGeldigeVergunningen(): void
     {
         $this->assertSame([], verlopen_vergunningen($this->db, $this->route(1)));
     }
 
     #[Group('FE-11')]
-    #[TestDox('Randgeval: een vergunning die vandaag afloopt, is vandaag nog geldig')]
+    #[TestDox('IT15 · Randgeval: een vergunning die vandaag afloopt, is vandaag nog geldig')]
     public function testVergunningVandaagAf(): void
     {
         $this->db->prepare('UPDATE locations SET permit_end_date = ? WHERE id = ?')->execute([$this->vandaag, self::WESTERPARK]);
@@ -163,7 +163,7 @@ final class PlanningsregelsTest extends TestCase
     }
 
     #[Group('FE-12')]
-    #[TestDox('Unhappy flow: een route met een verlopen vergunning mag niet worden goedgekeurd')]
+    #[TestDox('IT16 · Unhappy flow: een route met een verlopen vergunning mag niet worden goedgekeurd')]
     public function testGoedkeurenVerlopen(): void
     {
         $redenen = redenen_niet_goedkeuren($this->db, $this->route(3));
@@ -171,14 +171,14 @@ final class PlanningsregelsTest extends TestCase
     }
 
     #[Group('FE-12')]
-    #[TestDox('Happy flow: de conceptroute van vandaag mag worden goedgekeurd')]
+    #[TestDox('IT17 · Happy flow: de conceptroute van vandaag mag worden goedgekeurd')]
     public function testGoedkeurenMag(): void
     {
         $this->assertSame([], redenen_niet_goedkeuren($this->db, $this->route(2)));
     }
 
     #[Group('FE-12')]
-    #[TestDox('Unhappy flow: een route zonder stops mag niet worden goedgekeurd')]
+    #[TestDox('IT18 · Unhappy flow: een route zonder stops mag niet worden goedgekeurd')]
     public function testGoedkeurenLeeg(): void
     {
         $this->db->exec("INSERT INTO routes (route_date, status, created_by) VALUES (CURDATE(), 'concept', 2)");
@@ -187,7 +187,7 @@ final class PlanningsregelsTest extends TestCase
     }
 
     #[Group('FE-12')]
-    #[TestDox('Randgeval: een overlap die later is ontstaan, wordt bij goedkeuren toch gevonden')]
+    #[TestDox('IT19 · Randgeval: een overlap die later is ontstaan, wordt bij goedkeuren toch gevonden')]
     public function testGoedkeurenLatereOverlap(): void
     {
         // Buiten de controle om een botsende stop in de conceptroute zetten
@@ -200,7 +200,7 @@ final class PlanningsregelsTest extends TestCase
     // ================= TE-02: database betrouwbaar =================
 
     #[Group('TE-02')]
-    #[TestDox('Foreign key: een stop met een truck die niet bestaat, wordt door de database geweigerd')]
+    #[TestDox('IT20 · Foreign key: een stop met een truck die niet bestaat, wordt door de database geweigerd')]
     public function testForeignKey(): void
     {
         $this->expectException(PDOException::class);
@@ -208,7 +208,7 @@ final class PlanningsregelsTest extends TestCase
     }
 
     #[Group('TE-02')]
-    #[TestDox('ON DELETE CASCADE: als een route wordt verwijderd, gaan de stops mee')]
+    #[TestDox('IT21 · ON DELETE CASCADE: als een route wordt verwijderd, gaan de stops mee')]
     public function testCascade(): void
     {
         $this->db->exec('DELETE FROM routes WHERE id = 1');
@@ -216,7 +216,7 @@ final class PlanningsregelsTest extends TestCase
     }
 
     #[Group('TE-02')]
-    #[TestDox('Alle 7 tabellen uit het ERD bestaan, met 6 foreign keys')]
+    #[TestDox('IT22 · Alle 7 tabellen uit het ERD bestaan, met 6 foreign keys')]
     public function testTabellen(): void
     {
         $tabellen = $this->db->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);
